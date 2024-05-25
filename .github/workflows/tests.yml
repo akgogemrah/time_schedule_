@@ -1,0 +1,38 @@
+name: Flutter_Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Restore packages
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      # - name: Dart Code Metrics Analyze
+      #   run: flutter pub run dart_code_metrics:metrics analyze lib --fatal-style --fatal-performance --fatal-warnings
+
+      - name: Run tests
+        run: flutter test --coverage
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+
+
